@@ -30,7 +30,11 @@ class TimestampController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $timestamp = new Timestamp;
+        $timestamp->stamp_type = $request->stamp_type;
+        $timestamp->description = $request->stamp_type === 'in' ? $request->description : 'out';
+        $timestamp->save();
+        return redirect()->route('home');
     }
 
     /**

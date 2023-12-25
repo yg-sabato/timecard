@@ -40,7 +40,7 @@
             <!-- Description -->
             <div class="mb-3">
                 <label for="description" class="form-label">どんな業務を行うか宣言してください(終了時は登録されないので不要です)</label>
-                <input required type="text" id="description" name="description" class="form-control">
+                <input type="text" id="description" name="description" class="form-control">
             </div>
         
             <!-- Submit Button -->
