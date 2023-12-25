@@ -48,7 +48,7 @@ class TimestampController extends AdminController
      */
     protected function detail($id)
     {
-        $show = new Show(TimestampModel::findOrFail($id));
+        $show = new Show(Timestamp::findOrFail($id));
 
         $show->field('id', __('ID'));
         $show->field('created_at', __('Created at'));
@@ -64,11 +64,12 @@ class TimestampController extends AdminController
      */
     protected function form()
     {
-        $form = new Form(new TimestampModel);
+        $form = new Form(new Timestamp);
 
         $form->display('id', __('ID'));
+        $form->select('stamp_type', __('Stamp type'))->options(['in' => 'In', 'out' => 'Out']);
+        $form->text('description', __('Description'));
         $form->display('created_at', __('Created At'));
-        $form->display('updated_at', __('Updated At'));
 
         return $form;
     }

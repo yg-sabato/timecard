@@ -12,7 +12,9 @@ class TimestampController extends Controller
      */
     public function index()
     {
-        //
+        $amount_display = 50;
+        $timestamps = Timestamp::orderBy('created_at', 'desc')->take($amount_display)->get();
+        return view('index', ['timestamps' => $timestamps]);
     }
 
     /**
@@ -20,7 +22,7 @@ class TimestampController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -28,7 +30,7 @@ class TimestampController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
