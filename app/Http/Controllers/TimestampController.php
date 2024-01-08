@@ -12,9 +12,14 @@ class TimestampController extends Controller
      */
     public function index()
     {
+
+        // クエリパラメータに指定された'url'を取得
+        $url = request()->query('url');
+        $url = $url ? $url : '';
+
         $amount_display = 50;
         $timestamps = Timestamp::orderBy('created_at', 'desc')->take($amount_display)->get();
-        return view('index', ['timestamps' => $timestamps]);
+        return view('index', ['timestamps' => $timestamps, 'url' => $url]);
     }
 
     /**
