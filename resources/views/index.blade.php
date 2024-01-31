@@ -47,6 +47,13 @@
                     <button type="submit" class="btn btn-primary">打刻</button>
                 </div>
             </form>
+
+            <div class="p-3">
+                {{ round($totalTime, 2) }}h: ¥{{ number_format($hourlyWage * $totalTime) }}
+                @if($inflag)
+                <div class="alert alert-danger" role="alert">現在、業務を開始しています。終了する場合は、終了ボタンを押してください。</div>
+                @endif
+            </div>
             
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-dark">
