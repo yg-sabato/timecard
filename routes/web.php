@@ -16,3 +16,4 @@ use App\Http\Controllers\TimestampController;
 
 Route::get('/', [TimestampController::class, 'index'])->name('home');
 Route::post('/store', [TimestampController::class, 'store'])->name('timestamps-submit');
+Route::get('/timestamps-export', [TimestampController::class, 'export'])->name('timestamps-export');

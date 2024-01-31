@@ -54,6 +54,14 @@
                 <div class="alert alert-danger" role="alert">現在、業務を開始しています。終了する場合は、終了ボタンを押してください。</div>
                 @endif
             </div>
+
+            {{-- 前月分の勤務記録を書き出すボタン --}}
+            <div class="p-3">
+                <form method="get" action="{{ route('timestamps-export') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">前月分の勤務記録を書き出す</button>
+                </form>
+            </div>
             
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-dark">
