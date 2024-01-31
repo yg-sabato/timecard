@@ -21,6 +21,11 @@ class TimestampController extends Controller
             return $timestamp->created_at->format('Y-m') === now()->format('Y-m');
         });
 
+        // 今月のレコードがない場合
+        if(!$timestamps_this_month->first()){
+            return view('index', ['timestamps' => $timestamps_this_month, 'hourlyWage' => 0, 'totalTime' => 0.0, 'inflag' => false]);
+        }
+        
         // 最新がinの場合は、給料の計算から除外 inflagを立てる
         $inflag = false;
         if ($timestamps_this_month->first()->stamp_type === 'in') {
@@ -40,7 +45,7 @@ class TimestampController extends Controller
             }
         }
 
-        return view('index', ['timestamps' => $timestamps, 'hourlyWage' => $hourlyWage, 'totalTime' => $totalTime, 'inflag' => $inflag]);
+        return view('index', ['timestamps' => $timestamps_this_month, 'hourlyWage' => $hourlyWage, 'totalTime' => $totalTime, 'inflag' => $inflag]);
     }
 
     /**
@@ -93,5 +98,66 @@ class TimestampController extends Controller
     public function destroy(Timestamp $timestamp)
     {
         //
+    }
+
+    // 前月分のデータをcsv書き出し
+    public function export()
+    {
+        // 今日を起点にして、前月のデータを取得
+        $timestamps = Timestamp::where('created_at', '>=', now()->subMonth()->startOfMonth())
+            ->where('created_at', '<=', now()->subMonth()->endOfMonth())
+            ->get();
+
+        // もしデータがないならエラーを返す
+        if(!$timestamps->first()){
+            return redirect()->route('home')->with('error', '先月のデータがありません。');
+        }
+        
+        // もしinから始まっているならエラーを返す
+        if($timestamps->first()->stamp_type === 'out'){
+            return redirect()->route('home')->with('error', '先月のデータにエラーがあります。');
+        }
+
+        // csvのヘッダーを作成
+        $csvHeader = ['作業内容', '日付', '開始時間', '終了時間'];
+
+        // csvのデータを作成
+        $csvData = [];
+        $in_time = null;
+        $in_description = "";
+        foreach($timestamps as $timestamp){
+            if($timestamp->stamp_type === 'in'){
+                if(!is_null($in_time)){
+                    return redirect()->route('home')->with('error', '先月のデータにエラーがあります。');
+                }
+                $in_time = $timestamp->created_at;
+                $in_description = $timestamp->description;
+            }else{
+                if(is_null($in_time)){
+                    return redirect()->route('home')->with('error', '先月のデータにエラーがあります。');
+                }
+                $csvData[] = [
+                    $in_description,
+                    $timestamp->created_at->format('Y-m-d'),
+                    $in_time->format('H:i'),
+                    $timestamp->created_at->format('H:i')
+                ];
+                $in_time = null;
+            }
+        }
+
+        // csvのファイル名を作成
+        $csvFileName = now()->subMonth()->format('Y-m') . '.csv';
+
+        // csvを作成してダウンロード
+        return response()->streamDownload(function() use ($csvHeader, $csvData) {
+            $stream = fopen('php://output', 'w');
+            stream_filter_prepend($stream,'convert.iconv.utf-8/cp932//TRANSLIT');
+            fputcsv($stream, $csvHeader);
+            foreach ($csvData as $row) {
+                fputcsv($stream, $row);
+            }
+            fclose($stream);
+        }, $csvFileName);
     }
 }
