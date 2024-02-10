@@ -4,7 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>業務計測ツール</title>
+        
+        {{-- faviconを追加 --}}
+        <link rel="icon" href="{{ asset('tea.png') }}" type="image/x-icon">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -12,9 +15,12 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
 
-    <header class="bg-dark py-3">
+    <header class="bg-light bg-primary py-3">
         <div class="inner">
-            <h1 class="text-white">業務打刻ツール</h1>
+            <div class="d-flex justify-content-flex-first align-items-center gap-3">
+                <img src="{{ asset('tea.png') }}" style="width: 70px; height: auto;">
+                <h1>業務計測ツール</h1>
+            </div>
         </div>
     </header>
 
@@ -47,6 +53,21 @@
                     <button type="submit" class="btn btn-primary">打刻</button>
                 </div>
             </form>
+
+            <div class="p-3">
+                {{ round($totalTime, 2) }}h: ¥{{ number_format($hourlyWage * $totalTime) }}
+                @if($inflag)
+                <div class="alert alert-danger" role="alert">現在、業務を開始しています。終了する場合は、終了ボタンを押してください。</div>
+                @endif
+            </div>
+
+            {{-- 前月分の勤務記録を書き出すボタン --}}
+            <div class="p-3">
+                <form method="get" action="{{ route('timestamps-export') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">前月分の勤務記録を書き出す</button>
+                </form>
+            </div>
             
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-dark">
