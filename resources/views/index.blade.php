@@ -46,13 +46,6 @@
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">打刻</button>
                 </div>
-
-                {{-- スプレッドシートのURLを指定する(クエリパラメータでも可能) --}}
-                <div class="mb-3">
-                    <label for="spreadsheet_url" class="form-label">SpreadsheetのURLを入力してください。</label>
-                    <input type="text" name="spreadsheet_url" value="{{ $url }}" class="form-control" id="spreadsheet_url">
-                    <button class="btn btn-primary" id="to_spreadsheet">Spreadsheetを確認する</button>
-                </div>
             </form>
             
             <table class="table table-bordered table-hover table-striped">
@@ -93,14 +86,6 @@
 
                 // 毎秒更新
                 setInterval(updateTime, 1000);
-            })();
-            (()=>{
-                const toSpreadsheet = () => {
-                    const url = document.getElementById('spreadsheet_url').value;
-                    window.open(url);
-                }
-
-                document.getElementById('to_spreadsheet').addEventListener('click', toSpreadsheet);
             })();
         </script>
 
