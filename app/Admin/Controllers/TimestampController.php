@@ -15,7 +15,7 @@ class TimestampController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Timestamp controller';
+    protected $title = 'Timestamp Management';
 
     /**
      * Make a grid builder.
@@ -32,10 +32,17 @@ class TimestampController extends AdminController
             $filter->between('created_at', 'Created at')->datetime();
         });
 
-        $grid->column('id', __('ID'))->sortable();
-        $grid->column('stamp_type', __('Stamp type'));
-        $grid->column('description', __('Description'));
-        $grid->column('created_at', __('Created at'));
+        $grid->column('created_at', __('Created at'))->display(function($created_at){
+                return date('m-d H:i:s', strtotime($created_at));
+            })->sortable();
+        $grid->column('stamp_type', __('Stamp type'))->sortable();
+        $grid->column('description', __('Description'))->display(function($description){
+            if($this->stamp_type === 'out'){
+                return '';
+            }
+            return $description;
+        })->sortable();
+        
 
         return $grid;
     }
