@@ -101,21 +101,30 @@ class TimestampController extends Controller
     }
 
     // 前月分のデータをcsv書き出し
-    public function export()
-    {
-        // 今日を起点にして、前月のデータを取得
-        $timestamps = Timestamp::where('created_at', '>=', now()->subMonth()->startOfMonth())
-            ->where('created_at', '<=', now()->subMonth()->endOfMonth())
-            ->get();
+    public function export($month)
+    {   
+        if($month === 'last-month'){
+            // 前月のデータを取得
+            $timestamps = Timestamp::where('created_at', '>=', now()->subMonth()->startOfMonth())
+                ->where('created_at', '<=', now()->subMonth()->endOfMonth())
+                ->get();
+        }else if($month === 'this-month'){
+            // 今月のデータを取得
+            $timestamps = Timestamp::where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->get();
+        }else{
+            return redirect()->route('home')->with('error', 'エラーが発生しました。');
+        }
 
         // もしデータがないならエラーを返す
         if(!$timestamps->first()){
-            return redirect()->route('home')->with('error', '先月のデータがありません。');
+            return redirect()->route('home')->with('error', 'データがありません。');
         }
         
         // もしinから始まっているならエラーを返す
         if($timestamps->first()->stamp_type === 'out'){
-            return redirect()->route('home')->with('error', '先月のデータにエラーがあります。');
+            return redirect()->route('home')->with('error', 'データにエラーがあります。');
         }
 
         // csvのヘッダーを作成
@@ -147,7 +156,9 @@ class TimestampController extends Controller
         }
 
         // csvのファイル名を作成
-        $csvFileName = now()->subMonth()->format('Y-m') . '.csv';
+        $csvFileName = '';
+        if($month === 'last-month') $csvFileName = now()->subMonth()->format('Y-m') . '.csv';
+        if($month === 'this-month') $csvFileName = now()->format('Y-m') . '.csv';
 
         // csvを作成してダウンロード
         return response()->streamDownload(function() use ($csvHeader, $csvData) {

@@ -61,11 +61,15 @@
                 @endif
             </div>
 
-            {{-- 前月分の勤務記録を書き出すボタン --}}
-            <div class="p-3">
-                <form method="get" action="{{ route('timestamps-export') }}">
+            {{-- 勤務記録を書き出すボタン --}}
+            <div class="p-3 d-flex gap-3">
+                <form method="get" action="{{ url('timestamps-export/last-month') }}">
                     @csrf
                     <button type="submit" class="btn btn-primary">前月分の勤務記録を書き出す</button>
+                </form>
+                <form method="get" action="{{ url('timestamps-export/this-month') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">今月分の勤務記録を書き出す</button>
                 </form>
             </div>
             
