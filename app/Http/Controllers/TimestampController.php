@@ -61,6 +61,13 @@ class TimestampController extends Controller
      */
     public function store(Request $request)
     {
+        // 最新のレコードのstamp_typeを取得する
+        $latest_stamp_type = Timestamp::orderBy('created_at', 'desc')->first()->stamp_type;
+        // 最新のレコードのstamp_typeと同じならエラーを返す
+        if($latest_stamp_type === $request->stamp_type){
+            return redirect()->route('home')->with('error', '最新のレコードと同じスタンプを押すことはできません。');
+        }
+
         $timestamp = new Timestamp;
         $timestamp->stamp_type = $request->stamp_type;
         $timestamp->description = $request->stamp_type === 'in' ? $request->description : 'out';

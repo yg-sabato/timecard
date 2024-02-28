@@ -21,6 +21,11 @@
                 <img src="{{ asset('tea.png') }}" style="width: 70px; height: auto;">
                 <h1>業務計測ツール</h1>
             </div>
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
         </div>
     </header>
 
