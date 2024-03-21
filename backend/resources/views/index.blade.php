@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>業務計測ツール</title>
+        <title>業務計測ツール(旧Laravel Blade版)</title>
         
         {{-- faviconを追加 --}}
         <link rel="icon" href="{{ asset('tea.png') }}" type="image/x-icon">
