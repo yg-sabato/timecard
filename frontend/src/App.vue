@@ -1,26 +1,32 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<script setup>
+  import AppHeader from './components/AppHeader.vue';
+  import TodoList from './components/TodoList.vue';
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+  import { ref } from 'vue';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  const todos = ref([]);
+  const newTodo = ref("");
+
+  /**
+ * TODOを追加する
+ */
+  const addTodo = () => {
+    todos.value.push(newTodo.value);
+    newTodo.value = "";
+  };
+  /**
+   * TODOを削除する
+   * @param {number} i 削除するTODOのインデックス
+   */
+  const removeTodo = (i) => {
+      todos.value.splice(i, 1);
+  };
+
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<template>
+  <AppHeader color="blue">TODOツール</AppHeader>
+  <input type="text" size="30" v-model="newTodo">
+  <button @click="addTodo()">追加</button>
+  <TodoList :todos="todos" :newTodo="newTodo" :removeTodo="removeTodo" />
+</template>
