@@ -4,14 +4,17 @@
     const inFlag = ref(false);
     const hourlyWage = ref(0);
     const totalHours = ref(0);
+    const isLoading = ref(false);
 
     const fetchTimestamps = async () => {
+        isLoading.value = true;
         const response = await fetch('http://localhost:8080/api/get-this-month/');
         const data = await response.json();
         timestamps.value = data['timestamps'];
         inFlag.value = data['inFlag'];
         hourlyWage.value = data['hourlyWage'];
         totalHours.value = data['totalTime'];
+        isLoading.value = false;
     };
 
     const convertUTCtoJST = (utcDateString) => {
@@ -46,6 +49,7 @@
 
 <template>
     <h2>打刻一覧</h2>
+    <VaProgressBar v-show="isLoading" indeterminate />
     <p>合計時間: {{ totalHours.toFixed(1) }}h</p>
     <p>現在の金額: ¥{{ formatWithCommas(Math.trunc(hourlyWage * totalHours)) }}</p>
     <table class="va-table">
@@ -65,3 +69,9 @@
         </tbody>
     </table>
 </template>
+
+<style lang="scss">
+    table{
+        width: 100%;
+    }
+</style>

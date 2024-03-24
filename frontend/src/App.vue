@@ -16,12 +16,12 @@
   >
     <template #top>
       <VaNavbar color="primary" class="py-2">
-        <template #left>
+        <!-- <template #left>
           <VaButton :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar" />
-        </template>
+        </template> -->
         <template #center>
           <VaNavbarItem class="font-bold text-lg">
-            LOGO
+            業務計測ツール
           </VaNavbarItem>
         </template>
       </VaNavbar>
@@ -57,8 +57,18 @@
 </template>
 
 <style lang="scss">
+  body{
+    font-size: 16px;
+    font-family: "BIZ UDGothic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
   main{
     max-height: 100%;
     overflow: scroll;
+  }
+  h2{
+    font-size: 1.5rem;
+    margin-top: 1rem;
   }
 </style>

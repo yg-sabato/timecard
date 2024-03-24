@@ -1,9 +1,7 @@
 <template>
     <div class="time-display">
-        <VaIcon class="material-icons">
-            schedule
-        </VaIcon>
-        <p>現在時刻: {{ currentTime }}</p>
+      <i class="fa fa-clock"></i>
+      <p>現在時刻: {{ currentTime }}</p>
     </div>
 </template>
 

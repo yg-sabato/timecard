@@ -2,16 +2,22 @@
     import Timer from './Timer.vue';
     import TimestampsTable from './TimestampsTable.vue';
     import Stamps from './Stamps.vue';
+    import GithubCards from './GithubCards.vue';
 
     import { ref } from 'vue';
 
     const tmpDescription = ref('');
+
+    const updateTmpDescription = (value) => {
+        tmpDescription.value = value;
+    };
 </script>
 
 <template>
     <div id="main-dashboard">
         <Timer />
         <Stamps :tmpDescription="tmpDescription" />
+        <GithubCards :updateTmpDescription="updateTmpDescription" />
         <TimestampsTable />
     </div>
 </template>
@@ -25,5 +31,7 @@
         justify-content: flex-start;
         align-items: flex-start;
         height: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
     }
 </style>
