@@ -178,4 +178,41 @@ class TimestampController extends Controller
             fclose($stream);
         }, $csvFileName);
     }
+
+    public function getThisMonth(){
+        $amount_display = 100;
+        $timestamps = Timestamp::orderBy('created_at', 'desc')->take($amount_display)->get();
+        $hourlyWage = 1300; // 時給
+
+        // stamp_typeが今月のものを抽出
+        $timestamps_this_month = $timestamps->filter(function ($timestamp) {
+            return $timestamp->created_at->format('Y-m') === now()->format('Y-m');
+        });
+
+        // 今月のレコードがない場合
+        if(!$timestamps_this_month->first()){
+            return view('index', ['timestamps' => $timestamps_this_month, 'hourlyWage' => 0, 'totalTime' => 0.0, 'inflag' => false]);
+        }
+        
+        // 最新がinの場合は、給料の計算から除外 inflagを立てる
+        $inflag = false;
+        if ($timestamps_this_month->first()->stamp_type === 'in') {
+            $timestamps_this_month->shift();
+            $inflag = true;
+        }
+
+        // outとinの時間の合計を検索し、時間単位で取得
+        $totalTime = 0.0;
+        $one = 0.0;
+        foreach($timestamps_this_month as $timestamp_this_month){
+            if($timestamp_this_month->stamp_type === 'out'){
+                $one = $timestamp_this_month->created_at;
+            }else{
+                // oneに記録したoutの時間との差を計算する
+                $totalTime += $timestamp_this_month->created_at->floatDiffInRealHours($one);
+            }
+        }
+
+        return(['timestamps' => $timestamps_this_month, 'hourlyWage' => $hourlyWage, 'totalTime' => $totalTime, 'inflag' => $inflag]);
+    }
 }

@@ -1,32 +1,64 @@
-<script setup>
-  import AppHeader from './components/AppHeader.vue';
-  import TodoList from './components/TodoList.vue';
+<script setup lang="ts">
 
   import { ref } from 'vue';
+  import { useBreakpoint } from 'vuestic-ui';
+  import MainDashboard from './components/MainDashboard.vue';
 
-  const todos = ref([]);
-  const newTodo = ref("");
+  const showSidebar = ref(false)
 
-  /**
- * TODOを追加する
- */
-  const addTodo = () => {
-    todos.value.push(newTodo.value);
-    newTodo.value = "";
-  };
-  /**
-   * TODOを削除する
-   * @param {number} i 削除するTODOのインデックス
-   */
-  const removeTodo = (i) => {
-      todos.value.splice(i, 1);
-  };
-
+  const breakpoints = useBreakpoint()
 </script>
 
 <template>
-  <AppHeader color="blue">TODOツール</AppHeader>
-  <input type="text" size="30" v-model="newTodo">
-  <button @click="addTodo()">追加</button>
-  <TodoList :todos="todos" :newTodo="newTodo" :removeTodo="removeTodo" />
+  <VaLayout 
+    style="height: 100vh; width: 100vw;"
+    :left="{ absolute: breakpoints.smDown }"
+  >
+    <template #top>
+      <VaNavbar color="primary" class="py-2">
+        <template #left>
+          <VaButton :icon="showSidebar ? 'menu_open' : 'menu'" @click="showSidebar = !showSidebar" />
+        </template>
+        <template #center>
+          <VaNavbarItem class="font-bold text-lg">
+            LOGO
+          </VaNavbarItem>
+        </template>
+      </VaNavbar>
+    </template>
+
+    <template #left>
+      <VaSidebar v-model="showSidebar">
+        <VaSidebarItem>
+          <VaSidebarItemContent>
+            <VaIcon name="home" /> 
+            <VaSidebarItemTitle>
+              Home
+            </VaSidebarItemTitle>
+          </VaSidebarItemContent>
+        </VaSidebarItem>
+        <VaSidebarItem>
+          <VaSidebarItemContent>
+            <VaIcon name="phone" />
+            <VaSidebarItemTitle>
+              About
+            </VaSidebarItemTitle>
+          </VaSidebarItemContent>
+        </VaSidebarItem>
+      </VaSidebar>
+    </template>
+
+    <template #content>
+      <main>
+        <MainDashboard />
+      </main>
+    </template>
+  </VaLayout>
 </template>
+
+<style lang="scss">
+  main{
+    max-height: 100%;
+    overflow: scroll;
+  }
+</style>
