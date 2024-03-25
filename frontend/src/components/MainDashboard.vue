@@ -16,7 +16,7 @@
 <template>
     <div id="main-dashboard">
         <Timer />
-        <Stamps :tmpDescription="tmpDescription" />
+        <Stamps v-model:modelValue="tmpDescription" />
         <GithubCards :updateTmpDescription="updateTmpDescription" />
         <TimestampsTable />
     </div>

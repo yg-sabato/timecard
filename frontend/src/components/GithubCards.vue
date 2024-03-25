@@ -1,16 +1,17 @@
 <script setup>
-    import { defineProps, ref } from 'vue';
+    import { ref } from 'vue';
     const props = defineProps({
         updateTmpDescription: Function,
     });
     const inputUrl = ref('');
     const isLoading = ref(false);
-    const githubData = ref({});
+    const githubData = ref([]);
 
-    props.updateTmpDescription('test');
+    props.updateTmpDescription('');
 
     const fetchGithubData = async () => {
         isLoading.value = true;
+        githubData.value = [];
 
         const token = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
         const headers = {
@@ -46,12 +47,14 @@
         const repoName = data.repository_url.split('/').pop();
 
         // 必要な情報を抽出
-        githubData.value = {
+        githubData.value.push({
             title: data.title,
             body: data.body,
             url: data.html_url,
             repoName: repoName,
-        };
+            type: type,
+            number: number,
+        });
 
         isLoading.value = false;
 
@@ -59,7 +62,7 @@
         inputUrl.value = '';
 
         // 記録の入力を追加
-        props.updateTmpDescription(`${githubData.repoName}: ${githubData.title}`);
+        props.updateTmpDescription(`${githubData.value[0].repoName}: ${githubData.value[0].title} #${githubData.value[0].number}`);
     };
 
 </script>
@@ -68,17 +71,18 @@
     <h2><i class="fa-brands fa-github"></i> Github連携</h2>
     <VaProgressBar v-show="isLoading" indeterminate />
     <VaInput
-        label="issueかpull requestのURLを入力"
+        label="issueのURLを入力"
         v-model="inputUrl"
     ></VaInput>
     <VaButton @click="fetchGithubData">データを取得</VaButton>
-    <div class="cards">
-        <a :href="githubData['url']" target="_blank" rel="noopener noreferrer">
+    <div v-if="githubData.length > 0" class="cards">
+        <a v-for="githubDatum in githubData" :href="githubDatum['url']" target="_blank" rel="noopener noreferrer">
             <VaCard>
-                <VaCardTitle><i class="fa-brands fa-github"></i> {{ githubData['repoName'] }}</VaCardTitle>
+                <VaCardTitle><i class="fa-brands fa-github"></i> {{ githubDatum['repoName'] }}</VaCardTitle>
                 <VaCardContent>
-                    <h3>{{ githubData['title'] }}</h3>
-                    <p>{{ githubData['body'] }}</p>
+                    <h3>{{ githubDatum['title'] }}</h3>
+                    <p>{{ githubDatum['type'] }} #{{ githubDatum['number'] }}</p>
+                    <p>{{ githubDatum['body'] }}</p>
                 </VaCardContent>
             </VaCard>
         </a>
@@ -100,6 +104,11 @@
     }
     .va-card {
         width: 100%;
-        max-width: 400px;
+        max-width: 480px;
+    }
+    h3{
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
     }
 </style>
