@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/get-this-month', [TimestampController::class, 'getThisMonth']);
+Route::post('/create-stamp', [TimestampController::class, 'stamp']);

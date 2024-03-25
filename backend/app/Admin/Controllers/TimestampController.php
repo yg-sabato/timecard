@@ -15,7 +15,7 @@ class TimestampController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Timestamp Management';
+    protected $title = '打刻管理';
 
     /**
      * Make a grid builder.
@@ -32,6 +32,9 @@ class TimestampController extends AdminController
             $filter->between('created_at', 'Created at')->datetime();
         });
 
+        // ソートをcreated_atの降順に設定
+        $grid->model()->orderBy('created_at', 'desc');
+
         $grid->column('created_at', __('Created at'))->display(function($created_at){
                 return date('m-d H:i:s', strtotime($created_at));
             })->sortable();
@@ -42,7 +45,11 @@ class TimestampController extends AdminController
             }
             return $description;
         })->sortable();
-        
+        $grid->column('issue_title', __('Issue title'))->sortable();
+        $grid->column('issue_body', __('Issue body'))->sortable();
+        $grid->column('issue_url', __('Issue url'))->sortable();
+        $grid->column('repo_name', __('Repo name'))->sortable();
+        $grid->column('issue_number', __('Issue number'))->sortable();
 
         return $grid;
     }
@@ -58,6 +65,13 @@ class TimestampController extends AdminController
         $show = new Show(Timestamp::findOrFail($id));
 
         $show->field('id', __('ID'));
+        $show->field('stamp_type', __('Stamp type'));
+        $show->field('description', __('Description'));
+        $show->field('issue_title', __('Issue title'));
+        $show->field('issue_body', __('Issue body'));
+        $show->field('issue_url', __('Issue url'));
+        $show->field('repo_name', __('Repo name'));
+        $show->field('issue_number', __('Issue number'));
         $show->field('created_at', __('Created at'));
         $show->field('updated_at', __('Updated at'));
 
@@ -75,6 +89,11 @@ class TimestampController extends AdminController
 
         $form->display('id', __('ID'));
         $form->select('stamp_type', __('Stamp type'))->options(['in' => 'In', 'out' => 'Out']);
+        $form->text('issue_title', __('Issue title'));
+        $form->text('issue_body', __('Issue body'));
+        $form->text('issue_url', __('Issue url'));
+        $form->text('repo_name', __('Repo name'));
+        $form->text('issue_number', __('Issue number'));
         $form->text('description', __('Description'));
         $form->display('created_at', __('Created At'));
 

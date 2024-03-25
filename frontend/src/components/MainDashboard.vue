@@ -7,17 +7,24 @@
     import { ref } from 'vue';
 
     const tmpDescription = ref('');
-
     const updateTmpDescription = (value) => {
         tmpDescription.value = value;
+    };
+
+    const githubData = ref([]);
+    const updateGithubData = (data) => {
+        githubData.value = data;
+    };
+    const pushGithubData = (data) => {
+        githubData.value.push(data);
     };
 </script>
 
 <template>
     <div id="main-dashboard">
         <Timer />
-        <Stamps v-model:modelValue="tmpDescription" />
-        <GithubCards :updateTmpDescription="updateTmpDescription" />
+        <Stamps v-model:modelValue="tmpDescription" :githubData="githubData" />
+        <GithubCards :updateTmpDescription="updateTmpDescription" :githubData="githubData" :updateGithubData="updateGithubData" :pushGithubData="pushGithubData" />
         <TimestampsTable />
     </div>
 </template>

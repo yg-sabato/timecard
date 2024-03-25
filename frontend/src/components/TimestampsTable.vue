@@ -8,7 +8,7 @@
 
     const fetchTimestamps = async () => {
         isLoading.value = true;
-        const response = await fetch('http://localhost:8080/api/get-this-month/');
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_ENDPOINT}/api/get-this-month/`);
         const data = await response.json();
         timestamps.value = data['timestamps'];
         inFlag.value = data['inFlag'];

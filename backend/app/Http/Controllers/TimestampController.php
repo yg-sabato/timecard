@@ -215,4 +215,31 @@ class TimestampController extends Controller
 
         return(['timestamps' => $timestamps_this_month, 'hourlyWage' => $hourlyWage, 'totalTime' => $totalTime, 'inflag' => $inflag]);
     }
+
+    /**
+     * フロントエンドから打刻を受け取る処理
+     * @param Request $request
+     */
+    public function stamp(Request $request){
+        // 最新のレコードのstamp_typeを取得する
+        $latest_stamp_type = Timestamp::orderBy('created_at', 'desc')->first()->stamp_type;
+
+        // inならout、outならinを打刻する
+        $stamp_type = $latest_stamp_type === 'in' ? 'out' : 'in';
+        $description = $stamp_type === 'in' ? $request->description : 'out';
+
+        // データベースに保存
+        $timestamp = new Timestamp;
+        $timestamp->stamp_type = $stamp_type;
+        $timestamp->description = $description;
+        $timestamp->issue_title = $request->issuetitle;
+        $timestamp->issue_body = $request->issuebody;
+        $timestamp->issue_url = $request->issueurl;
+        $timestamp->repo_name = $request->reponame;
+        $timestamp->issue_number = $request->issuenumber;
+        $timestamp->save();
+
+        // 成功した場合はステータスコード200を返す
+        return response()->json(['message' => 'success'], 200);
+    }
 }

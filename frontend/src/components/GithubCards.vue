@@ -2,16 +2,18 @@
     import { ref } from 'vue';
     const props = defineProps({
         updateTmpDescription: Function,
+        githubData: Array,
+        updateGithubData: Function,
+        pushGithubData: Function,
     });
     const inputUrl = ref('');
     const isLoading = ref(false);
-    const githubData = ref([]);
 
     props.updateTmpDescription('');
 
     const fetchGithubData = async () => {
         isLoading.value = true;
-        githubData.value = [];
+        props.updateGithubData([]);
 
         const token = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
         const headers = {
@@ -47,7 +49,7 @@
         const repoName = data.repository_url.split('/').pop();
 
         // 必要な情報を抽出
-        githubData.value.push({
+        props.pushGithubData({
             title: data.title,
             body: data.body,
             url: data.html_url,
@@ -62,7 +64,7 @@
         inputUrl.value = '';
 
         // 記録の入力を追加
-        props.updateTmpDescription(`${githubData.value[0].repoName}: ${githubData.value[0].title} #${githubData.value[0].number}`);
+        props.updateTmpDescription(`${repoName}: ${data.title} #${number}`);
     };
 
 </script>
@@ -75,8 +77,8 @@
         v-model="inputUrl"
     ></VaInput>
     <VaButton @click="fetchGithubData">データを取得</VaButton>
-    <div v-if="githubData.length > 0" class="cards">
-        <a v-for="githubDatum in githubData" :href="githubDatum['url']" target="_blank" rel="noopener noreferrer">
+    <div v-if="props.githubData.length > 0" class="cards">
+        <a v-for="githubDatum in props.githubData" :href="githubDatum['url']" target="_blank" rel="noopener noreferrer">
             <VaCard>
                 <VaCardTitle><i class="fa-brands fa-github"></i> {{ githubDatum['repoName'] }}</VaCardTitle>
                 <VaCardContent>
